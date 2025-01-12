@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Estilo personalizado para el SearchView -->
+    <style name="CustomSearchView" parent="Widget.AppCompat.SearchView">
+        <!-- Fondo del SearchView -->
+        <item name="queryBackground">@android:color/transparent</item>
+        <!-- Color del texto -->
+        <item name="android:textColor">#FFFFFF</item>
+        <!-- Color de hint (texto de ayuda) -->
+        <item name="android:textColorHint">#80FFFFFF</item>
+        <!-- Íconos de búsqueda y limpieza -->
+        <item name="searchIcon">@drawable/ic_search</item>
+        <item name="closeIcon">@drawable/ic_close</item>
+        <!-- Apariencia del texto -->
+        <item name="android:textAppearance">@style/CustomSearchTextAppearance</item>
+    </style>
+
+    <!-- Apariencia personalizada del texto -->
+    <style name="CustomSearchTextAppearance" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textColorHint">#80FFFFFF</item>
+    </style>
+</resources>

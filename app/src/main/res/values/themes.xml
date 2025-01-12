@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.ReproductorMusica" parent="android:Theme.Material.Light.NoActionBar" >
+    <style name="Theme.ReproductorMusica" parent="Theme.AppCompat.Light.NoActionBar" >
         <!-- Colores primarios -->
         <item name="colorPrimary">@color/primary_color</item>
         <item name="colorPrimaryVariant">@color/primary_color</item>
