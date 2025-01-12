@@ -6,16 +6,15 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Título de la ventana -->
-
-    <!-- LinearLayout para los botones -->
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/app_name"
         android:textAlignment="center"
-        android:textSize="24sp"
+        android:textColor="@color/primary_color"
+        android:textSize="36sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -64,8 +63,6 @@
             android:contentDescription="@string/stop"
             android:src="@drawable/ic_stop" />
     </LinearLayout>
-
-    <!-- Apartado para seleccionar la canción -->
 
 
     <!-- Ícono de añadir canción -->
