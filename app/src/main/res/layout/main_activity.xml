@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.SearchView
-        android:id="@+id/searchBar"
+        android:id="@+id/search"
         android:layout_width="20dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -59,7 +59,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.5">
 
-        <!-- Botón de reproducir -->
         <ImageView
             android:id="@+id/play"
             android:layout_width="0dp"
@@ -68,10 +67,6 @@
             android:contentDescription="@string/play"
             android:src="@drawable/ic_play" />
 
-
-        <!-- Botón de pausar -->
-
-        <!-- Botón de detener -->
         <ImageView
             android:id="@+id/pause"
             android:layout_width="0dp"
@@ -92,7 +87,7 @@
 
     <!-- Ícono de añadir canción -->
     <ImageView
-        android:id="@+id/addSongIcon"
+        android:id="@+id/add"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_marginStart="319dp"
