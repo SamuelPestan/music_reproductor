@@ -1,90 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_color"
-    tools:context=".MainActivity">
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <!-- Lista de canciones -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/song_list"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:padding="16dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/player_controls"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:scrollbars="vertical" />
-
-    <!-- Controles del reproductor -->
-    <LinearLayout
-        android:id="@+id/player_controls"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <!-- Barra de progreso -->
-        <SeekBar
-            android:id="@+id/song_progress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:progressTint="@color/primary_color" />
-
-        <!-- Botones de control -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:paddingTop="8dp">
-
-            <ImageButton
-                android:id="@+id/btn_play"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_play"
-                android:contentDescription="@string/play" />
-
-            <ImageButton
-                android:id="@+id/btn_pause"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_pause"
-                android:contentDescription="@string/pause"
-                android:layout_marginStart="16dp" />
-
-            <ImageButton
-                android:id="@+id/btn_stop"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_stop"
-                android:contentDescription="@string/stop"
-                android:layout_marginStart="16dp" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <!-- Botón para agregar canciones -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btn_add_song"
+    <!-- Título de la ventana -->
+    <TextView
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/add_song"
-        android:src="@drawable/ic_add"
-        app:layout_constraintBottom_toTopOf="@id/player_controls"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintMarginBottom="16dp"
-        app:layout_constraintMarginEnd="16dp"
-        app:backgroundTint="@color/primary_color" />
+        android:layout_gravity="center_horizontal"
+        android:text="@string/app_name"
+        android:textAlignment="center"
+        android:textSize="24sp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- LinearLayout para los botones -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <!-- Botón de reproducir -->
+        <ImageView
+            android:id="@+id/play"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/play"
+            android:src="@drawable/ic_play" />
+
+
+        <!-- Botón de pausar -->
+        <ImageView
+            android:id="@+id/pause"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/pause"
+            android:src="@drawable/ic_pause" />
+
+        <!-- Botón de detener -->
+        <ImageView
+            android:id="@+id/stop"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/stop"
+            android:src="@drawable/ic_stop" />
+    </LinearLayout>
+
+    <!-- Apartado para seleccionar la canción -->
+
+
+    <!-- Ícono de añadir canción -->
+    <ImageView
+        android:id="@+id/addSongIcon"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginTop="20dp"
+        android:contentDescription="@string/add_song"
+        android:src="@drawable/ic_add" />
+</LinearLayout>
