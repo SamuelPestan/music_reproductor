@@ -3,9 +3,12 @@ package com.example.reproductormusica
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.ListView
+import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,6 +23,9 @@ class MainActivity : ComponentActivity() {
     private lateinit var previous: ImageView
     private lateinit var add: ImageView
 
+    private lateinit var seekBar: SeekBar
+    private val handler = Handler(Looper.getMainLooper())
+
     private var mediaPlayer: MediaPlayer? = null
 
     // Lista para guardar los nombres de los archivos de música seleccionados
@@ -27,8 +33,10 @@ class MainActivity : ComponentActivity() {
 
     // Cancion seleccionada
     private var selectSong: Uri? = null
-
     private var currentSongIndex = -1
+
+    // Variables para gestionar el SeekBar
+    private var isSeekBarTouching = false
 
     // Directorio donde se guardarán las canciones
     private val musicDirectory: File by lazy {
@@ -80,7 +88,7 @@ class MainActivity : ComponentActivity() {
         next = findViewById(R.id.next)
         previous = findViewById(R.id.previous)
         add = findViewById(R.id.add)
-
+        seekBar = findViewById(R.id.progressBar)
         // Crea el directorio en caso de que no exista
         if (!musicDirectory.exists()) {
             musicDirectory.mkdirs()
@@ -117,11 +125,28 @@ class MainActivity : ComponentActivity() {
         previous.setOnClickListener {
             playPrevious()
         }
+
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                if (fromUser) {
+                    mediaPlayer?.seekTo(progress)
+                }
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                isSeekBarTouching = true
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                isSeekBarTouching = false
+            }
+        })
     }
 
     override fun onPause() {
         super.onPause()
         if (mediaPlayer?.isPlaying == true) {
+            handler.removeCallbacksAndMessages(null) // Detener los callbacks del Handler
             mediaPlayer?.pause()
         }
 
@@ -132,6 +157,7 @@ class MainActivity : ComponentActivity() {
         // Liberar recursos del MediaPlayer
         mediaPlayer?.release()
         mediaPlayer = null
+        handler.removeCallbacksAndMessages(null) // Detener los callbacks del Handler
     }
 
     private fun playSelectedFile(uri: Uri) {
@@ -140,6 +166,9 @@ class MainActivity : ComponentActivity() {
                 setDataSource(applicationContext, uri) // Establecer el URI del archivo
                 prepare() // Prepara el MediaPlayer para la reproducción
                 start() // Comienza la reproducción
+
+                seekBar.max = duration // Duración total de la canción
+                updateSeekBar()
             }
         } catch (e: Exception) {
             Toast.makeText(this, "Error al reproducir el archivo", Toast.LENGTH_SHORT).show()
@@ -202,4 +231,14 @@ class MainActivity : ComponentActivity() {
             playSelectedFile(Uri.fromFile(File(musicDirectory, previousSong)))
         }
     }
+
+    private fun updateSeekBar() {
+        if (mediaPlayer != null && !isSeekBarTouching) {
+            seekBar.progress = mediaPlayer!!.currentPosition
+        }
+
+        // Vuelve a ejecutar este método después de 1 segundo
+        handler.postDelayed({ updateSeekBar() }, 1000)
+    }
+
 }
