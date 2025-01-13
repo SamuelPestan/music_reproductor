@@ -1,5 +1,6 @@
 package com.example.reproductormusica
 
+import android.annotation.SuppressLint
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.net.Uri
@@ -9,6 +10,7 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.SeekBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,9 +24,13 @@ class MainActivity : ComponentActivity() {
     private lateinit var next: ImageView
     private lateinit var previous: ImageView
     private lateinit var add: ImageView
+    private lateinit var title: TextView
 
     private lateinit var seekBar: SeekBar
     private val handler = Handler(Looper.getMainLooper())
+
+    private lateinit var startTime: TextView
+    private lateinit var endTime: TextView
 
     private var mediaPlayer: MediaPlayer? = null
 
@@ -89,6 +95,10 @@ class MainActivity : ComponentActivity() {
         previous = findViewById(R.id.previous)
         add = findViewById(R.id.add)
         seekBar = findViewById(R.id.progressBar)
+        startTime = findViewById(R.id.startTime)
+        endTime = findViewById(R.id.endTime)
+        title = findViewById(R.id.title)
+
         // Crea el directorio en caso de que no exista
         if (!musicDirectory.exists()) {
             musicDirectory.mkdirs()
@@ -113,10 +123,24 @@ class MainActivity : ComponentActivity() {
         }
 
         play.setOnClickListener {
-            selectSong?.let { uri ->
-                playSelectedFile(uri)
-            } ?: Toast.makeText(this, "Selecciona una canción primero", Toast.LENGTH_SHORT).show()
+            if (mediaPlayer != null && mediaPlayer?.isPlaying == true) {
+                // Si el MediaPlayer está reproduciendo, pausamos
+                mediaPlayer?.pause()
+                play.setImageResource(R.drawable.ic_play) // Cambia a ícono de "play"
+            } else {
+                selectSong?.let { uri ->
+                    if (mediaPlayer == null) {
+                        // Si no hay un MediaPlayer activo, creamos uno nuevo
+                        playSelectedFile(uri)
+                    } else {
+                        // Si el MediaPlayer existe pero está pausado, continuamos
+                        mediaPlayer?.start()
+                        play.setImageResource(R.drawable.ic_pause) // Cambia a ícono de "pausa"
+                    }
+                } ?: Toast.makeText(this, "Selecciona una canción primero", Toast.LENGTH_SHORT).show()
+            }
         }
+
 
         next.setOnClickListener {
             playNext()
@@ -162,6 +186,11 @@ class MainActivity : ComponentActivity() {
 
     private fun playSelectedFile(uri: Uri) {
         try {
+            // Detener reproducción actual si existe
+            mediaPlayer?.stop()
+            mediaPlayer?.release()
+            mediaPlayer = null
+
             mediaPlayer = MediaPlayer().apply {
                 setDataSource(applicationContext, uri) // Establecer el URI del archivo
                 prepare() // Prepara el MediaPlayer para la reproducción
@@ -170,6 +199,13 @@ class MainActivity : ComponentActivity() {
                 seekBar.max = duration // Duración total de la canción
                 updateSeekBar()
             }
+
+            // Actualiza el título de la aplicación con el nombre de la canción (sin extensión)
+            val fileName = File(uri.path ?: "").nameWithoutExtension
+            title.text = fileName
+
+            // Asegura que el botón de reproducción tenga el ícono de pausa
+            play.setImageResource(R.drawable.ic_pause)
         } catch (e: Exception) {
             Toast.makeText(this, "Error al reproducir el archivo", Toast.LENGTH_SHORT).show()
         }
@@ -233,12 +269,23 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun updateSeekBar() {
-        if (mediaPlayer != null && !isSeekBarTouching) {
-            seekBar.progress = mediaPlayer!!.currentPosition
+        mediaPlayer?.let { mp ->
+            if (!isSeekBarTouching) {
+                seekBar.progress = mp.currentPosition
+                startTime.text = formatTime(mp.currentPosition)
+                endTime.text = formatTime(mp.duration)
+            }
         }
 
-        // Vuelve a ejecutar este método después de 1 segundo
+        // Vuelve a ejecutar este metodo después de 1 segundo
         handler.postDelayed({ updateSeekBar() }, 1000)
+    }
+
+    @SuppressLint("DefaultLocale")
+    private fun formatTime(millis: Int): String {
+        val minutes = millis / 1000 / 60
+        val seconds = millis / 1000 % 60
+        return String.format("%02d:%02d", minutes, seconds)
     }
 
 }
