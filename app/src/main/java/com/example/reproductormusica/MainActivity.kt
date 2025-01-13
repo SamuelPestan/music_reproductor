@@ -38,10 +38,16 @@ class MainActivity : ComponentActivity() {
     // Declara un launcher para abrir el selector de archivos
     private val openFileLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
-
             /// Guardamos el archivo de música en el directorio de la app
             val inputStream = contentResolver.openInputStream(it)
-            val fileName = it.lastPathSegment ?: "Unknown Song"
+
+            // Obtener el nombre del archivo real desde el ContentResolver
+            val cursor = contentResolver.query(it, null, null, null, null)
+            val fileName = cursor?.use { c ->
+                val nameIndex = c.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
+                c.moveToFirst()
+                c.getString(nameIndex) ?: "Unknown Song"
+            } ?: "Unknown Song"
             val destinationFile = File(musicDirectory, fileName)
 
             if (destinationFile.exists()) {
@@ -152,23 +158,33 @@ class MainActivity : ComponentActivity() {
 
         // Si hay archivos de música, añadirlos a la lista
         musicFiles?.forEach { file ->
-            songList.add(file.name)
+            // Usa un cursor para extraer la información del archivo
+            val uri = Uri.fromFile(file)
+            val cursor = contentResolver.query(uri, null, null, null, null)
+            val fileName = cursor?.use { c ->
+                val nameIndex = c.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
+                if (c.moveToFirst() && nameIndex != -1) {
+                    c.getString(nameIndex)
+                } else {
+                    file.name // Usa el nombre del archivo como respaldo
+                }
+            } ?: file.name // Si el cursor no funciona, usa el nombre del archivo directamente
+
+            songList.add(fileName)
         }
 
-        if (songList.isNotEmpty()) {
-            // Si hay un filtro de búsqueda (query), aplicar el filtro
-            val filteredList = if (!query.isNullOrEmpty()) {
-                songList.filter { it.contains(query, ignoreCase = true) }
-            } else {
-                songList
-            }
-
-            val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, filteredList )
-            list.adapter = adapter
-
-            // Notificar al adaptador para que actualice la vista
-            adapter.notifyDataSetChanged()
+        // Si hay un filtro de búsqueda (query), aplicar el filtro
+        val filteredList = if (!query.isNullOrEmpty()) {
+            songList.filter { it.contains(query, ignoreCase = true) }
+        } else {
+            songList
         }
+
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, filteredList )
+        list.adapter = adapter
+
+        // Notificar al adaptador para que actualice la vista
+        adapter.notifyDataSetChanged()
     }
 
     private fun playNext() {
