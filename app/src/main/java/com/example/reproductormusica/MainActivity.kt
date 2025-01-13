@@ -48,6 +48,9 @@ class MainActivity : ComponentActivity() {
                         input.copyTo(output)
                     }
                 }
+
+                // Actualizamos la lista después de guardar la canción
+                updateList()
             } catch (e: IOException) {
                 Toast.makeText(this, "Error al guardar la canción", Toast.LENGTH_SHORT).show()
             }
@@ -146,5 +149,8 @@ class MainActivity : ComponentActivity() {
 
         val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, filteredList )
         list.adapter = adapter
+
+        // Notificar al adaptador para que actualice la vista
+        adapter.notifyDataSetChanged()
     }
 }
