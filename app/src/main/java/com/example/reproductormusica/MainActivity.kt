@@ -25,6 +25,9 @@ class MainActivity : ComponentActivity() {
     // Lista para guardar los nombres de los archivos de música seleccionados
     private val songList = mutableListOf<String>()
 
+    // Cancion seleccionada
+    private var selectSong: Uri? = null
+
     // Directorio donde se guardarán las canciones
     private val musicDirectory: File by lazy {
         File(filesDir, "music")  // Usamos el directorio de archivos internos
@@ -81,7 +84,14 @@ class MainActivity : ComponentActivity() {
         list.setOnItemClickListener { _, _, position, _ ->
             val selectedSong = songList[position]
             val songUri = Uri.fromFile(File(musicDirectory, selectedSong))
+            selectSong = songUri
             playSelectedFile(songUri)
+        }
+
+        play.setOnClickListener {
+            selectSong?.let { uri ->
+                playSelectedFile(uri)
+            } ?: Toast.makeText(this, "Selecciona una canción primero", Toast.LENGTH_SHORT).show()
         }
     }
 
