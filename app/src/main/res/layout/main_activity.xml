@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -11,24 +12,23 @@
         android:layout_width="175dp"
         android:layout_height="175dp"
         android:layout_marginTop="18dp"
+        android:contentDescription="@string/app_name"
         android:src="@drawable/music_icon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/app_name"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/search"
-        android:layout_width="20dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:queryHint="Buscar canción..."
-        android:theme="@style/CustomSearchView"
-        app:layout_constraintBottom_toTopOf="@+id/progressBar"
+
+    <ListView
+        android:id="@+id/searchSong"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
     <SeekBar
         android:id="@+id/progressBar"
@@ -58,6 +58,14 @@
         app:layout_constraintVertical_bias="0.5">
 
         <ImageView
+            android:id="@+id/previous"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/pause"
+            android:src="@drawable/ic_previous" />
+
+        <ImageView
             android:id="@+id/play"
             android:layout_width="0dp"
             android:layout_height="56dp"
@@ -66,20 +74,12 @@
             android:src="@drawable/ic_play" />
 
         <ImageView
-            android:id="@+id/pause"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_weight="1"
-            android:contentDescription="@string/pause"
-            android:src="@drawable/ic_pause" />
-
-        <ImageView
-            android:id="@+id/stop"
+            android:id="@+id/next"
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_weight="1"
             android:contentDescription="@string/stop"
-            android:src="@drawable/ic_stop" />
+            android:src="@drawable/ic_next" />
     </LinearLayout>
 
 
@@ -88,15 +88,12 @@
         android:id="@+id/add"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:layout_marginStart="319dp"
-        android:layout_marginTop="239dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="36dp"
+        android:layout_marginBottom="16dp"
         android:contentDescription="@string/add_song"
         android:src="@drawable/ic_add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
