@@ -44,6 +44,11 @@ class MainActivity : ComponentActivity() {
             val fileName = it.lastPathSegment ?: "Unknown Song"
             val destinationFile = File(musicDirectory, fileName)
 
+            if (destinationFile.exists()) {
+                Toast.makeText(this, "El archivo ya existe", Toast.LENGTH_SHORT).show()
+                return@let
+            }
+
             try {
                 inputStream?.use { input ->
                     destinationFile.outputStream().use { output ->
