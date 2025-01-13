@@ -28,6 +28,8 @@ class MainActivity : ComponentActivity() {
     // Cancion seleccionada
     private var selectSong: Uri? = null
 
+    private var currentSongIndex = -1
+
     // Directorio donde se guardarán las canciones
     private val musicDirectory: File by lazy {
         File(filesDir, "music")  // Usamos el directorio de archivos internos
@@ -96,6 +98,14 @@ class MainActivity : ComponentActivity() {
                 playSelectedFile(uri)
             } ?: Toast.makeText(this, "Selecciona una canción primero", Toast.LENGTH_SHORT).show()
         }
+
+        next.setOnClickListener {
+            playNext()
+        }
+
+        previous.setOnClickListener {
+            playPrevious()
+        }
     }
 
     override fun onPause() {
@@ -140,17 +150,35 @@ class MainActivity : ComponentActivity() {
             songList.add(file.name)
         }
 
-        // Si hay un filtro de búsqueda (query), aplicar el filtro
-        val filteredList = if (!query.isNullOrEmpty()) {
-            songList.filter { it.contains(query, ignoreCase = true) }
-        } else {
-            songList
+        if (songList.isNotEmpty()) {
+            // Si hay un filtro de búsqueda (query), aplicar el filtro
+            val filteredList = if (!query.isNullOrEmpty()) {
+                songList.filter { it.contains(query, ignoreCase = true) }
+            } else {
+                songList
+            }
+
+            val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, filteredList )
+            list.adapter = adapter
+
+            // Notificar al adaptador para que actualice la vista
+            adapter.notifyDataSetChanged()
         }
+    }
 
-        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, filteredList )
-        list.adapter = adapter
+    private fun playNext() {
+        if (songList.isNotEmpty()) {
+            currentSongIndex = (currentSongIndex + 1) % songList.size
+            val nextSong = songList[currentSongIndex]
+            playSelectedFile(Uri.fromFile(File(musicDirectory, nextSong)))
+        }
+    }
 
-        // Notificar al adaptador para que actualice la vista
-        adapter.notifyDataSetChanged()
+    private fun playPrevious() {
+        if (songList.isNotEmpty()) {
+            currentSongIndex = if (currentSongIndex - 1 < 0) songList.size - 1 else currentSongIndex - 1
+            val previousSong = songList[currentSongIndex]
+            playSelectedFile(Uri.fromFile(File(musicDirectory, previousSong)))
+        }
     }
 }
