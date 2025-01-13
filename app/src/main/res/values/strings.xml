@@ -6,4 +6,6 @@
     <string name="add_song">Add Song</string>
     <string name="select_song">Selecciona una canción</string>
     <string name="search_song">Buscar canción</string>
+    <string name="line">/</string>
+    <string name="cero">00:00</string>
 </resources>
