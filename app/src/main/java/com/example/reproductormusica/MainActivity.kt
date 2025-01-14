@@ -14,17 +14,18 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.io.File
 import java.io.IOException
 
 class MainActivity : ComponentActivity() {
 
-    private lateinit var list: ListView
     private lateinit var play: ImageView
     private lateinit var next: ImageView
     private lateinit var previous: ImageView
     private lateinit var add: ImageView
     private lateinit var title: TextView
+    private lateinit var searchSong: ImageView
 
     private lateinit var seekBar: SeekBar
     private val handler = Handler(Looper.getMainLooper())
@@ -89,7 +90,7 @@ class MainActivity : ComponentActivity() {
         setContentView(R.layout.main_activity)
 
         // Inicializar las vistas
-        list = findViewById(R.id.searchSong)
+        searchSong = findViewById(R.id.searchBtn)
         play = findViewById(R.id.play)
         next = findViewById(R.id.next)
         previous = findViewById(R.id.previous)
@@ -114,12 +115,12 @@ class MainActivity : ComponentActivity() {
             openFileLauncher.launch("audio/*")
         }
 
-        // Configurar clics en la lista
-        list.setOnItemClickListener { _, _, position, _ ->
-            val selectedSong = songList[position]
-            val songUri = Uri.fromFile(File(musicDirectory, selectedSong))
-            selectSong = songUri
-            playSelectedFile(songUri)
+        searchSong.setOnClickListener {
+            if (songList.isEmpty()) {
+                Toast.makeText(this, "No hay canciones disponibles", Toast.LENGTH_SHORT).show()
+            } else {
+                showBottomSheetDialog() // Mostrar la lista de canciones con el diálogo
+            }
         }
 
         play.setOnClickListener {
@@ -211,7 +212,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun updateList(query: String? = null) {
+    private fun updateList() {
         // Limpiar la lista de canciones antes de agregar nuevas
         songList.clear()
 
@@ -237,19 +238,6 @@ class MainActivity : ComponentActivity() {
 
             songList.add(fileName)
         }
-
-        // Si hay un filtro de búsqueda (query), aplicar el filtro
-        val filteredList = if (!query.isNullOrEmpty()) {
-            songList.filter { it.contains(query, ignoreCase = true) }
-        } else {
-            songList
-        }
-
-        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, filteredList )
-        list.adapter = adapter
-
-        // Notificar al adaptador para que actualice la vista
-        adapter.notifyDataSetChanged()
     }
 
     private fun playNext() {
@@ -286,6 +274,32 @@ class MainActivity : ComponentActivity() {
         val minutes = millis / 1000 / 60
         val seconds = millis / 1000 % 60
         return String.format("%02d:%02d", minutes, seconds)
+    }
+
+    @SuppressLint("InflateParams")
+    private fun showBottomSheetDialog() {
+        // Crear un BottomSheetDialog
+        val bottomSheetDialog = BottomSheetDialog(this)
+
+        // Inflar la vista personalizada para el diálogo
+        val view = layoutInflater.inflate(R.layout.bottom_sheet_song_list, null)
+        bottomSheetDialog.setContentView(view)
+
+        // Obtener referencia al ListView dentro del BottomSheet
+        val songListView: ListView = view.findViewById(R.id.songListView)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, songList)
+        songListView.adapter = adapter
+
+        // Configurar clics en los elementos de la lista
+        songListView.setOnItemClickListener { _, _, position, _ ->
+            val selectedSong = songList[position]
+            val songUri = Uri.fromFile(File(musicDirectory, selectedSong))
+            selectSong = songUri
+            playSelectedFile(songUri)
+            bottomSheetDialog.dismiss() // Cerrar el diálogo después de seleccionar una canción
+        }
+
+        bottomSheetDialog.show()
     }
 
 }
