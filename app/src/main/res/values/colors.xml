@@ -5,8 +5,7 @@
     <color name="white">#FFFFFFFF</color>
 
     <!-- Colores de fondo y texto -->
-    <color name="light_gray">#e1e1e1</color>
-    <color name="background_color">#FFFFFFFF</color>
+    <color name="background_color">#e1e1e1</color>
     <color name="primary_color">#365b6d</color> <!-- Azul principal -->
     <color name="accent_color">#d4af37</color>
 
