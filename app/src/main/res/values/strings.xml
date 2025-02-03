@@ -8,4 +8,6 @@
     <string name="search_song">Buscar canción</string>
     <string name="line">/</string>
     <string name="cero">00:00</string>
+    <string name="select_music">Seleccionar archivo de música</string>
+    <string name="safe_song">Guardar canción</string>
 </resources>

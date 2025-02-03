@@ -7,6 +7,8 @@ import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.SeekBar
@@ -112,7 +114,7 @@ class MainActivity : ComponentActivity() {
         super.onStart()
 
         add.setOnClickListener {
-            openFileLauncher.launch("audio/*")
+            showAddSongDialog()
         }
 
         searchSong.setOnClickListener {
@@ -305,5 +307,64 @@ class MainActivity : ComponentActivity() {
 
         bottomSheetDialog.show()
     }
+
+    @SuppressLint("InflateParams")
+    private fun showAddSongDialog() {
+        val bottomSheetDialog = BottomSheetDialog(this)
+        val view = layoutInflater.inflate(R.layout.bottom_sheet_add_song, null)
+        bottomSheetDialog.setContentView(view)
+
+        val songNameEditText = view.findViewById<EditText>(R.id.songNameEditText)
+        val selectFileButton = view.findViewById<Button>(R.id.selectFileButton)
+
+        var selectedUri: Uri? = null
+
+        // Abrir el selector de archivos al pulsar el botón
+        selectFileButton.setOnClickListener {
+            openFileLauncher.launch("audio/*")
+        }
+
+        // Al seleccionar un archivo, guardar la canción en el directorio de la aplicación
+        val saveButton = view.findViewById<Button>(R.id.saveButton)
+        saveButton.setOnClickListener {
+            val songName = if (songNameEditText.text.isNotEmpty()) {
+                songNameEditText.text.toString()
+            } else {
+                // Si no se introduce un nombre, usamos el nombre del archivo
+                selectedUri?.let { uri ->
+                    File(uri.path ?: "").nameWithoutExtension
+                } ?: "Unknown Song"
+            }
+
+            selectedUri?.let { uri ->
+                val inputStream = contentResolver.openInputStream(uri)
+                val destinationFile = File(musicDirectory, "$songName.mp3")
+
+                if (destinationFile.exists()) {
+                    Toast.makeText(this, "El archivo ya existe", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                try {
+                    inputStream?.use { input ->
+                        destinationFile.outputStream().use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+
+                    // Actualizar la lista de canciones después de guardar
+                    updateList()
+
+                    Toast.makeText(this, "Canción añadida", Toast.LENGTH_SHORT).show()
+                    bottomSheetDialog.dismiss()
+                } catch (e: IOException) {
+                    Toast.makeText(this, "Error al guardar la canción", Toast.LENGTH_SHORT).show()
+                }
+            } ?: Toast.makeText(this, "Selecciona un archivo primero", Toast.LENGTH_SHORT).show()
+        }
+
+        bottomSheetDialog.show()
+    }
+
 
 }
