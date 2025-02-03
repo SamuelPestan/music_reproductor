@@ -20,12 +20,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/SecondaryButtonStyle"
-        android:text="@string/select_music" />
+        android:text="@string/select_music"
+        tools:ignore="VisualLintButtonSize"/>
 
     <Button
         android:id="@+id/saveButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/SecondaryButtonStyle"
-        android:text="@string/safe_song" />
+        android:text="@string/safe_song"
+        tools:ignore="VisualLintButtonSize" />
 </LinearLayout>
