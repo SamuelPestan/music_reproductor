@@ -155,6 +155,8 @@ class MainActivity : ComponentActivity() {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
                     mediaPlayer?.seekTo(progress)
+                    // Actualiza el tiempo de inicio en tiempo real mientras el usuario mueve el SeekBar
+                    startTime.text = formatTime(progress)
                 }
             }
 
@@ -259,7 +261,9 @@ class MainActivity : ComponentActivity() {
     private fun updateSeekBar() {
         mediaPlayer?.let { mp ->
             if (!isSeekBarTouching) {
+                // Actualiza el progreso del SeekBar si no está siendo tocado
                 seekBar.progress = mp.currentPosition
+                // Actualiza los textos de inicio y fin
                 startTime.text = formatTime(mp.currentPosition)
                 endTime.text = formatTime(mp.duration)
             }
