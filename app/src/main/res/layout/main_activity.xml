@@ -36,6 +36,7 @@
         android:id="@+id/seekBarContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:layout_constraintWidth_max="400dp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
