@@ -153,6 +153,7 @@ class MainActivity : ComponentActivity() {
             playPrevious()
         }
 
+        // Controla la funcionalidad del seekBar
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
@@ -244,6 +245,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    // Reproduce la siguiente canción si es que hay
     private fun playNext() {
         if (songList.isNotEmpty()) {
             currentSongIndex = (currentSongIndex + 1) % songList.size
@@ -252,6 +254,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    // Reproduce la canción previa si hay
     private fun playPrevious() {
         if (songList.isNotEmpty()) {
             currentSongIndex = if (currentSongIndex - 1 < 0) songList.size - 1 else currentSongIndex - 1
@@ -275,6 +278,7 @@ class MainActivity : ComponentActivity() {
         handler.postDelayed({ updateSeekBar() }, 1000)
     }
 
+    // Muestra el tiempo de la canción en minutos:segundos
     @SuppressLint("DefaultLocale")
     private fun formatTime(millis: Int): String {
         val minutes = millis / 1000 / 60
@@ -282,6 +286,7 @@ class MainActivity : ComponentActivity() {
         return String.format("%02d:%02d", minutes, seconds)
     }
 
+    // Muestra una lista con las canciones añadidas
     @SuppressLint("InflateParams")
     private fun showBottomSheetDialog() {
         // Crear un BottomSheetDialog
@@ -308,6 +313,7 @@ class MainActivity : ComponentActivity() {
         bottomSheetDialog.show()
     }
 
+    // Muestra una lista que permite añadir canciones y cambiarle el nombre
     @SuppressLint("InflateParams")
     private fun showAddSongDialog() {
         val bottomSheetDialog = BottomSheetDialog(this)
@@ -365,6 +371,4 @@ class MainActivity : ComponentActivity() {
 
         bottomSheetDialog.show()
     }
-
-
 }
